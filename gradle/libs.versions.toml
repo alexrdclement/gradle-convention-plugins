@@ -1,0 +1,29 @@
+[versions]
+agp = "8.13.0"
+android-tools = "31.13.0"
+kotlin = "2.2.20"
+kotlinx-coroutines = "1.10.2"
+maven-publish = "0.34.0"
+runtime-android = "1.9.3"
+ksp = "2.2.20-2.0.4"
+room = "2.8.2"
+shipkit-autoversion = "2.1.2"
+shipkit-changelog = "2.0.1"
+
+[libraries]
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "android-tools" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
+shipkit-autoversion = { id = "org.shipkit.shipkit-auto-version", version.ref = "shipkit-autoversion" }
+shipkit-changelog = { id = "org.shipkit.shipkit-changelog", version.ref = "shipkit-changelog" }
+shipkit-githubrelease = { id = "org.shipkit.shipkit-github-release", version.ref = "shipkit-changelog" }
+
+[bundles]
