@@ -31,6 +31,7 @@ dependencies {
     implementation(alexrdclementPluginLibs.room.gradle.plugin)
     implementation(alexrdclementPluginLibs.shipkit.autoversion.plugin)
     implementation(alexrdclementPluginLibs.shipkit.changelog.plugin)
+    implementation(alexrdclementPluginLibs.maven.publish.plugin)
 }
 
 tasks {
@@ -89,6 +90,10 @@ gradlePlugin {
         register("kotlinMultiplatformLibrary") {
             id = "com.alexrdclement.gradle.plugin.kotlin.multiplatform.library"
             implementationClass = "KotlinMultiplatformLibraryConventionPlugin"
+        }
+        register("mavenPublish") {
+            id = "com.alexrdclement.gradle.plugin.maven.publish"
+            implementationClass = "MavenPublishConventionPlugin"
         }
     }
 }

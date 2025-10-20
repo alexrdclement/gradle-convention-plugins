@@ -27,6 +27,7 @@ compose-compiler-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name 
 hilt-gradle-plugin = { group = "com.google.dagger.hilt.android", name = "com.google.dagger.hilt.android.gradle.plugin", version.ref = "hilt" }
 shipkit-autoversion-plugin = { group = "org.shipkit", name = "shipkit-auto-version", version.ref = "shipkit-autoversion" }
 shipkit-changelog-plugin = { group = "org.shipkit", name = "shipkit-changelog", version.ref = "shipkit-changelog" }
+maven-publish-plugin = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "maven-publish" }
 
 # Applied via convention plugins
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk-libs" }
