@@ -80,5 +80,9 @@ gradlePlugin {
             id = "com.alexrdclement.gradle.plugin.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("kotlinMultiplatformLibrary") {
+            id = "com.alexrdclement.gradle.plugin.kotlin.multiplatform.library"
+            implementationClass = "KotlinMultiplatformLibraryConventionPlugin"
+        }
     }
 }
