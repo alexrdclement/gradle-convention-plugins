@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.0"
+alexrdclement-gradle-plugins = "0.0.9"
 android-desugar-jdk-libs = "2.1.5"
 android-tools = "31.13.0"
 androidx-test = "1.7.0"
@@ -24,6 +25,8 @@ ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "com.google.devt
 room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 compose-compiler-plugin = { group = "org.jetbrains.kotlin.plugin.compose", name = "org.jetbrains.kotlin.plugin.compose.gradle.plugin", version.ref = "kotlin" }
 hilt-gradle-plugin = { group = "com.google.dagger.hilt.android", name = "com.google.dagger.hilt.android.gradle.plugin", version.ref = "hilt" }
+shipkit-autoversion-plugin = { group = "org.shipkit", name = "shipkit-auto-version", version.ref = "shipkit-autoversion" }
+shipkit-changelog-plugin = { group = "org.shipkit", name = "shipkit-changelog", version.ref = "shipkit-changelog" }
 
 # Applied via convention plugins
 android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk-libs" }
@@ -46,6 +49,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 
 [plugins]
+alexrdclement-github-release = { id = "com.alexrdclement.gradle.plugin.github.release", version.ref = "alexrdclement-gradle-plugins" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

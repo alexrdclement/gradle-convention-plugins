@@ -29,6 +29,8 @@ dependencies {
     implementation(alexrdclementPluginLibs.hilt.gradle.plugin)
     implementation(alexrdclementPluginLibs.ksp.gradle.plugin)
     implementation(alexrdclementPluginLibs.room.gradle.plugin)
+    implementation(alexrdclementPluginLibs.shipkit.autoversion.plugin)
+    implementation(alexrdclementPluginLibs.shipkit.changelog.plugin)
 }
 
 tasks {
@@ -75,6 +77,10 @@ gradlePlugin {
         register("androidRoom") {
             id = "com.alexrdclement.gradle.plugin.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
+        }
+        register("githubRelease") {
+            id = "com.alexrdclement.gradle.plugin.github.release"
+            implementationClass = "GithubReleaseConventionPlugin"
         }
         register("jvmLibrary") {
             id = "com.alexrdclement.gradle.plugin.jvm.library"
