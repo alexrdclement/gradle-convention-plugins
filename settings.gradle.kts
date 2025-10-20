@@ -11,6 +11,11 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
+    versionCatalogs {
+        create("alexrdclementPluginLibs") {
+            from(files("gradle/libs.versions.toml"))
+        }
+    }
 }
 
 rootProject.name = "gradle-convention-plugins"

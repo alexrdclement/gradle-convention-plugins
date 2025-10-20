@@ -20,11 +20,13 @@ kotlin {
 }
 
 dependencies {
-    compileOnly(libs.android.gradle.plugin)
-    compileOnly(libs.android.tools.common)
-    compileOnly(libs.kotlin.gradle.plugin)
-    compileOnly(libs.ksp.gradle.plugin)
-    compileOnly(libs.room.gradle.plugin)
+    implementation(libs.android.gradle.plugin)
+    implementation(libs.android.tools.common)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.compose.compiler.plugin)
+    implementation(libs.hilt.gradle.plugin)
+    implementation(libs.ksp.gradle.plugin)
+    implementation(libs.room.gradle.plugin)
 }
 
 tasks {
@@ -55,10 +57,6 @@ gradlePlugin {
         register("androidLibraryTestFixtures") {
             id = "com.alexrdclement.gradle.plugin.android.library.test.fixtures"
             implementationClass = "AndroidLibraryTestFixturesConventionPlugin"
-        }
-        register("androidFeature") {
-            id = "com.alexrdclement.gradle.plugin.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
         }
         register("androidTest") {
             id = "com.alexrdclement.gradle.plugin.android.test"
