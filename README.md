@@ -1,1 +1,1 @@
-# gradle-convention-plugins
+# gradle
