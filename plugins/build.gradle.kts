@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(libs.plugins.maven.publish)
+    alias(alexrdclementPluginLibs.plugins.maven.publish)
 }
 
 group = "com.alexrdclement.gradle.plugin"
