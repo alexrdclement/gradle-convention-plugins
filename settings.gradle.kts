@@ -18,6 +18,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "gradle-convention-plugins"
+rootProject.name = "gradle"
 
 include(":plugins")
