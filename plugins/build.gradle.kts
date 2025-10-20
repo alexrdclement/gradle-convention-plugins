@@ -20,13 +20,15 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.android.gradle.plugin)
-    implementation(libs.android.tools.common)
-    implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.compose.compiler.plugin)
-    implementation(libs.hilt.gradle.plugin)
-    implementation(libs.ksp.gradle.plugin)
-    implementation(libs.room.gradle.plugin)
+    implementation(alexrdclementPluginLibs.android.gradle.plugin)
+    implementation(alexrdclementPluginLibs.android.kotlin.multiplatform.library.plugin)
+    implementation(alexrdclementPluginLibs.android.tools.common)
+    implementation(alexrdclementPluginLibs.kotlin.gradle.plugin)
+    implementation(alexrdclementPluginLibs.kotlin.multiplatform.plugin)
+    implementation(alexrdclementPluginLibs.compose.compiler.plugin)
+    implementation(alexrdclementPluginLibs.hilt.gradle.plugin)
+    implementation(alexrdclementPluginLibs.ksp.gradle.plugin)
+    implementation(alexrdclementPluginLibs.room.gradle.plugin)
 }
 
 tasks {
