@@ -90,5 +90,9 @@ gradlePlugin {
             id = "com.alexrdclement.gradle.plugin.kotlin.multiplatform.library"
             implementationClass = "KotlinMultiplatformLibraryConventionPlugin"
         }
+        register("mavenPublish") {
+            id = "com.alexrdclement.gradle.plugin.maven.publish"
+            implementationClass = "MavenPublishConventionPlugin"
+        }
     }
 }
