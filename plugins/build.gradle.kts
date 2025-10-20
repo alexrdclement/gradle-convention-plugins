@@ -23,9 +23,10 @@ dependencies {
     implementation(alexrdclementPluginLibs.android.gradle.plugin)
     implementation(alexrdclementPluginLibs.android.kotlin.multiplatform.library.plugin)
     implementation(alexrdclementPluginLibs.android.tools.common)
+    implementation(alexrdclementPluginLibs.jetbrains.compose)
+    implementation(alexrdclementPluginLibs.compose.compiler.plugin)
     implementation(alexrdclementPluginLibs.kotlin.gradle.plugin)
     implementation(alexrdclementPluginLibs.kotlin.multiplatform.plugin)
-    implementation(alexrdclementPluginLibs.compose.compiler.plugin)
     implementation(alexrdclementPluginLibs.hilt.gradle.plugin)
     implementation(alexrdclementPluginLibs.ksp.gradle.plugin)
     implementation(alexrdclementPluginLibs.room.gradle.plugin)
@@ -79,6 +80,14 @@ gradlePlugin {
             id = "com.alexrdclement.gradle.plugin.android.room"
             implementationClass = "AndroidRoomConventionPlugin"
         }
+        register("composeMultiplatform") {
+            id = "com.alexrdclement.gradle.plugin.compose.multiplatform"
+            implementationClass = "ComposeMultiplatformConventionPlugin"
+        }
+        register("desktopApplication") {
+            id = "com.alexrdclement.gradle.plugin.desktop.application"
+            implementationClass = "DesktopApplicationConventionPlugin"
+        }
         register("githubRelease") {
             id = "com.alexrdclement.gradle.plugin.github.release"
             implementationClass = "GithubReleaseConventionPlugin"
@@ -94,6 +103,10 @@ gradlePlugin {
         register("mavenPublish") {
             id = "com.alexrdclement.gradle.plugin.maven.publish"
             implementationClass = "MavenPublishConventionPlugin"
+        }
+        register("webApplication") {
+            id = "com.alexrdclement.gradle.plugin.web.application"
+            implementationClass = "WebApplicationConventionPlugin"
         }
     }
 }
