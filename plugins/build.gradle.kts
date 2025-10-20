@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.maven.publish)
 }
 
-group = "com.alexrdclement.gradle"
+group = "com.alexrdclement.gradle.plugin"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

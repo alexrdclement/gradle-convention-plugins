@@ -14,14 +14,14 @@ plugins {
 tasks.named<GenerateChangelogTask>("generateChangelog") {
     previousRevision = project.extra["shipkit-auto-version.previous-tag"] as String
     githubToken = System.getenv("GITHUB_TOKEN")
-    repository = "alexrdclement/gradle"
+    repository = "alexrdclement/gradle-plugins"
 }
 
 tasks.named<GithubReleaseTask>("githubRelease") {
     dependsOn(tasks.named("generateChangelog"))
     val isSnapshot = version.toString().endsWith("SNAPSHOT")
     enabled = !isSnapshot
-    repository = "alexrdclement/gradle"
+    repository = "alexrdclement/gradle-plugins"
     changelog = tasks.named("generateChangelog").get().outputs.files.singleFile
     githubToken = System.getenv("GITHUB_TOKEN")
     newTagRevision = System.getenv("GITHUB_SHA")
