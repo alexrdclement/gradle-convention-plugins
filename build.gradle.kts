@@ -2,13 +2,13 @@ import org.shipkit.changelog.GenerateChangelogTask
 import org.shipkit.github.release.GithubReleaseTask
 
 plugins {
-    alias(libs.plugins.kotlin.multiplatform) apply false
-    alias(libs.plugins.android.kotlin.multiplatform.library) apply false
-    alias(libs.plugins.maven.publish) apply false
+    alias(alexrdclementPluginLibs.plugins.kotlin.multiplatform) apply false
+    alias(alexrdclementPluginLibs.plugins.android.kotlin.multiplatform.library) apply false
+    alias(alexrdclementPluginLibs.plugins.maven.publish) apply false
 
-    alias(libs.plugins.shipkit.autoversion) apply true
-    alias(libs.plugins.shipkit.changelog) apply true
-    alias(libs.plugins.shipkit.githubrelease) apply true
+    alias(alexrdclementPluginLibs.plugins.shipkit.autoversion) apply true
+    alias(alexrdclementPluginLibs.plugins.shipkit.changelog) apply true
+    alias(alexrdclementPluginLibs.plugins.shipkit.githubrelease) apply true
 }
 
 tasks.named<GenerateChangelogTask>("generateChangelog") {
