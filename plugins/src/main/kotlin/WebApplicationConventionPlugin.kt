@@ -9,13 +9,16 @@ class WebApplicationConventionPlugin : Plugin<Project> {
         with(pluginManager) {
             apply("org.jetbrains.kotlin.multiplatform")
         }
-        extensions.configure<KotlinMultiplatformExtension> {
-            applyDefaultHierarchyTemplate()
-            @OptIn(ExperimentalWasmDsl::class)
-            wasmJs {
-                browser()
-                binaries.executable()
-            }
+    }
+}
+
+fun Project.webAppTarget() {
+    extensions.configure<KotlinMultiplatformExtension> {
+        applyDefaultHierarchyTemplate()
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            browser()
+            binaries.executable()
         }
     }
 }
