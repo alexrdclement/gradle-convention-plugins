@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 internal fun Project.configureKotlinAndroid(
@@ -51,6 +52,7 @@ internal fun Project.configureKotlinMultiplatformAndroidLibrary(
     androidLibraryExtension.apply {
         compileSdk = AndroidCompileSdk
         minSdk = AndroidMinSdk
+        enableCoreLibraryDesugaring = true
     }
 
     dependencies {

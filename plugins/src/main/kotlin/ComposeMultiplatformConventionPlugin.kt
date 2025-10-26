@@ -2,8 +2,8 @@ import com.alexrdclement.gradle.plugin.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
+import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -12,22 +12,44 @@ class ComposeMultiplatformConventionPlugin : Plugin<Project> {
         pluginManager.apply("org.jetbrains.compose")
         pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
-        configureCompose()
+        afterEvaluate {
+            configureCompose()
+        }
     }
 }
 
 fun Project.configureCompose() {
     composeCompiler {
-        // Needed for Layout Inspector to be able to see all of the nodes in the component tree:
-        //https://issuetracker.google.com/issues/338842143
         includeSourceInformation.set(true)
     }
 
-    val kotlin = extensions.getByType<KotlinMultiplatformExtension>()
+    val compose = extensions.getByType<ComposeExtension>()
+    extensions.configure<KotlinMultiplatformExtension> {
+        sourceSets.apply {
+            getByName("commonMain").dependencies {
+                implementation(compose.dependencies.components.uiToolingPreview)
+                implementation(compose.dependencies.runtime)
+                implementation(compose.dependencies.ui)
+                implementation(compose.dependencies.foundation)
+            }
 
-    kotlin.sourceSets.apply {
-        getByName("commonMain").dependencies {
-            implementation(libs.findLibrary("compose.runtime").get())
+            findByName("androidMain")?.apply {
+                dependencies {
+                    implementation(compose.dependencies.preview)
+
+                    // TODO: revisit in later versions of Otter. See https://issuetracker.google.com/issues/422373442
+                    implementation(compose.dependencies.uiTooling)
+                    implementation(libs.findLibrary("androidx.activity.compose").get())
+                    implementation(libs.findLibrary("androidx.customview").get())
+                    implementation(libs.findLibrary("androidx.emoji2").get())
+                }
+            }
+
+            findByName("jvmMain")?.apply {
+                dependencies {
+                    implementation(compose.dependencies.desktop.currentOs)
+                }
+            }
         }
     }
 }
