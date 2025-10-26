@@ -1,3 +1,7 @@
+import com.alexrdclement.gradle.plugin.AndroidLibraryTargetConfiguration
+import com.alexrdclement.gradle.plugin.IosFrameworkConfiguration
+import com.alexrdclement.gradle.plugin.IosLibraryTargetConfiguration
+import com.alexrdclement.gradle.plugin.configure
 import com.alexrdclement.gradle.plugin.configureKotlin
 import com.alexrdclement.gradle.plugin.configureKotlinMultiplatformAndroidLibrary
 import com.android.build.api.dsl.androidLibrary
@@ -6,7 +10,6 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.Framework
 
 class KotlinMultiplatformLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
@@ -25,10 +28,10 @@ fun Project.libraryTargets(
     iosFrameworkIsStatic: Boolean = true
 ) {
     libraryTargets(
-        android = AndroidLibraryTargetConfiguration(
+        androidConfiguration = AndroidLibraryTargetConfiguration(
             namespace = androidNamespace
         ),
-        ios = IosLibraryTargetConfiguration(
+        iosConfiguration = IosLibraryTargetConfiguration(
             framework = IosFrameworkConfiguration(
                 baseName = iosFrameworkBaseName,
                 isStatic = iosFrameworkIsStatic
@@ -38,20 +41,19 @@ fun Project.libraryTargets(
 }
 
 fun Project.libraryTargets(
-    android: AndroidLibraryTargetConfiguration,
-    ios: IosLibraryTargetConfiguration
+    androidConfiguration: AndroidLibraryTargetConfiguration,
+    iosConfiguration: IosLibraryTargetConfiguration
 ) {
     extensions.configure<KotlinMultiplatformExtension> {
         applyDefaultHierarchyTemplate()
 
         androidLibrary {
-            namespace = android.namespace
-            configureKotlinMultiplatformAndroidLibrary(this)
+            configureKotlinMultiplatformAndroidLibrary(this, androidConfiguration)
         }
 
         jvm()
 
-        val iosFrameworkConfiguration = ios.framework
+        val iosFrameworkConfiguration = iosConfiguration.framework
         iosArm64 {
             binaries.framework {
                 configure(iosFrameworkConfiguration)
@@ -69,22 +71,4 @@ fun Project.libraryTargets(
             binaries.executable()
         }
     }
-}
-
-data class AndroidLibraryTargetConfiguration(
-    val namespace: String
-)
-
-data class IosLibraryTargetConfiguration(
-    val framework: IosFrameworkConfiguration,
-)
-
-data class IosFrameworkConfiguration(
-    val baseName: String,
-    val isStatic: Boolean = true,
-)
-
-fun Framework.configure(configuration: IosFrameworkConfiguration) {
-    baseName = configuration.baseName
-    isStatic = configuration.isStatic
 }

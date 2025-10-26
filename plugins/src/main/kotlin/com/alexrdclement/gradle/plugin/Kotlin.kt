@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinBaseExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 internal fun Project.configureKotlinAndroid(
@@ -48,11 +47,22 @@ internal fun Project.configureKotlinAndroid(
 
 internal fun Project.configureKotlinMultiplatformAndroidLibrary(
     androidLibraryExtension: KotlinMultiplatformAndroidLibraryExtension,
+    configuration: AndroidLibraryTargetConfiguration,
 ) {
     androidLibraryExtension.apply {
         compileSdk = AndroidCompileSdk
         minSdk = AndroidMinSdk
         enableCoreLibraryDesugaring = true
+
+        namespace = configuration.namespace
+        configuration.hostTestConfiguration?.let(::withHostTest)
+        configuration.instrumentedTestConfiguration?.let {
+            withDeviceTest {
+                instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                execution = "ANDROIDX_TEST_ORCHESTRATOR"
+                it()
+            }
+        }
     }
 
     dependencies {
