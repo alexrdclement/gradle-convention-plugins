@@ -33,6 +33,9 @@ dependencies {
     implementation(alexrdclementPluginLibs.shipkit.autoversion.plugin)
     implementation(alexrdclementPluginLibs.shipkit.changelog.plugin)
     implementation(alexrdclementPluginLibs.maven.publish.plugin)
+
+    testImplementation(alexrdclementPluginLibs.junit)
+    testImplementation(gradleTestKit())
 }
 
 tasks {
@@ -103,6 +106,10 @@ gradlePlugin {
         register("mavenPublish") {
             id = "com.alexrdclement.gradle.plugin.maven.publish"
             implementationClass = "MavenPublishConventionPlugin"
+        }
+        register("moduleUtils") {
+            id = "com.alexrdclement.gradle.plugin.module.utils"
+            implementationClass = "ModuleUtilsPlugin"
         }
         register("webApplication") {
             id = "com.alexrdclement.gradle.plugin.web.application"
