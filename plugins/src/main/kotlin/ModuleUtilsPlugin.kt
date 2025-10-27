@@ -1,28 +1,37 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import org.gradle.work.DisableCachingByDefault
 
 class ModuleUtilsPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        target.tasks.register("createLibraryModule", CreateLibraryModuleTask::class.java) {
+        target.tasks.register("createKmpLibraryModule", CreateKmpLibraryModuleTask::class.java) {
             group = "module-automation"
             description = "Create a KMP library module with standard configuration."
+            projectRootDir.set(target.layout.projectDirectory)
         }
     }
 }
 
 @DisableCachingByDefault(because = "Creates new files and modifies settings.gradle.kts based on user input")
-abstract class CreateLibraryModuleTask : DefaultTask() {
+abstract class CreateKmpLibraryModuleTask : DefaultTask() {
     @get:Optional
     @get:Input
     @get:Option(option = "name", description = "The name of the library.")
     abstract val moduleName: Property<String>
+
+    @get:InputDirectory
+    @get:PathSensitive(PathSensitivity.RELATIVE)
+    abstract val projectRootDir: DirectoryProperty
 
     @TaskAction
     fun run() {
@@ -32,7 +41,7 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
             return
         }
 
-        val projectDir = project.rootDir
+        val projectDir = projectRootDir.get().asFile
         val gradlePropertiesFile = projectDir.resolve("gradle.properties")
         val namespace = if (gradlePropertiesFile.exists()) {
             val properties = java.util.Properties()
@@ -46,7 +55,7 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
             return
         }
 
-        // Parse module name: support both ":feature:auth" and "feature:auth" formats
+        // Support both ":feature:auth" and "feature:auth" formats
         val normalizedName = if (name.startsWith(":")) name.substring(1) else name
         val modulePath = normalizedName.replace(":", "/")
         val moduleIncludeName = if (name.startsWith(":")) name else ":$name"
@@ -58,7 +67,6 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
         }
         moduleDir.mkdirs()
 
-        // Create package name by replacing colons with dots and hyphens with nothing
         val packageSuffix = normalizedName.replace(":", ".").replace("-", "")
         val packageName = "$namespace.$packageSuffix"
 
@@ -66,10 +74,9 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
             "commonMain",
             "commonTest",
             "androidMain",
-            "androidTest",
-            "iosMain",
-            "iosTest",
+            "nativeMain",
             "jvmMain",
+            "wasmJsMain",
         )
         for (dir in sourceSets) {
             val sourceSetDir = "src/$dir/kotlin/"
@@ -78,11 +85,11 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
         }
 
         val androidNamespace = packageName
-        val iosFrameworkName = packageSuffix.replaceFirstChar { it.uppercase() }
+        val iosFrameworkName = normalizedName.split(":")
+            .joinToString("") { it.replaceFirstChar { c -> c.uppercase() } }
         val buildFileContent = """
             plugins {
                 id(libs.plugins.alexrdclement.kotlin.multiplatform.library.get().pluginId)
-                id(libs.plugins.alexrdclement.compose.multiplatform.get().pluginId)
             }
 
             kotlin {
@@ -93,6 +100,7 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
 
                 sourceSets {}
             }
+            
         """.trimIndent()
         moduleDir.resolve("build.gradle.kts").writeText(buildFileContent)
 
@@ -106,7 +114,7 @@ abstract class CreateLibraryModuleTask : DefaultTask() {
         includes.add(newIncludeLine)
         includes.sort()
 
-        val newSettingsContent = (otherLines + includes).joinToString("\n")
+        val newSettingsContent = (otherLines + includes).joinToString("\n").plus("\n")
         settingsFile.writeText(newSettingsContent)
 
         println("Successfully created module '$moduleIncludeName' at '$modulePath' and updated settings.gradle.kts.")

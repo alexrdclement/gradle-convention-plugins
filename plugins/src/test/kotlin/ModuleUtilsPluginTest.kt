@@ -1,16 +1,16 @@
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
-import org.junit.Assert.*
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.File
 
 class ModuleUtilsPluginTest {
 
-    @get:Rule
-    val testProjectDir = TemporaryFolder()
+    @TempDir
+    lateinit var testProjectDir: File
 
     private lateinit var settingsFile: File
     private lateinit var buildFile: File
@@ -18,13 +18,13 @@ class ModuleUtilsPluginTest {
 
     private val testNamespace = "com.example.test"
 
-    @Before
+    @BeforeEach
     fun setup() {
-        settingsFile = testProjectDir.newFile("settings.gradle.kts")
-        buildFile = testProjectDir.newFile("build.gradle.kts")
-        gradlePropertiesFile = testProjectDir.newFile("gradle.properties")
+        settingsFile = File(testProjectDir, "settings.gradle.kts").apply { createNewFile() }
+        buildFile = File(testProjectDir, "build.gradle.kts").apply { createNewFile() }
+        gradlePropertiesFile = File(testProjectDir, "gradle.properties").apply { createNewFile() }
 
-        val gradleDir = File(testProjectDir.root, "gradle")
+        val gradleDir = File(testProjectDir, "gradle")
         gradleDir.mkdirs()
         val libsFile = File(gradleDir, "libs.versions.toml")
         libsFile.writeText("""
@@ -33,7 +33,6 @@ class ModuleUtilsPluginTest {
 
             [plugins]
             alexrdclement-kotlin-multiplatform-library = { id = "com.alexrdclement.gradle.plugin.kotlin.multiplatform.library", version = "0.0.1" }
-            alexrdclement-compose-multiplatform = { id = "com.alexrdclement.gradle.plugin.compose.multiplatform", version = "0.0.1" }
         """.trimIndent())
 
         settingsFile.writeText("""
@@ -53,104 +52,110 @@ class ModuleUtilsPluginTest {
         """.trimIndent())
     }
 
-    @Test
-    fun `creates module with correct structure and source sets`() {
-        val result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments("createLibraryModule", "--name=auth")
-            .withPluginClasspath()
-            .build()
+    @Nested
+    inner class CreateKmpLibraryModuleTaskTest {
+        @Test
+        fun `creates module with correct structure and source sets`() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withArguments("createKmpLibraryModule", "--name=auth")
+                .withPluginClasspath()
+                .build()
 
-        assertEquals(TaskOutcome.SUCCESS, result.task(":createLibraryModule")?.outcome)
+            assertEquals(TaskOutcome.SUCCESS, result.task(":createKmpLibraryModule")?.outcome)
 
-        val moduleDir = File(testProjectDir.root, "auth")
-        assertTrue("Module directory should exist", moduleDir.exists())
+            val moduleDir = File(testProjectDir, "auth")
+            assertTrue(moduleDir.exists(), "Module directory should exist")
 
-        val buildFile = File(moduleDir, "build.gradle.kts")
-        assertTrue("build.gradle.kts should exist", buildFile.exists())
+            val buildFile = File(moduleDir, "build.gradle.kts")
+            assertTrue(buildFile.exists(), "build.gradle.kts should exist")
 
-        val sourceSets = listOf(
-            "commonMain",
-            "commonTest",
-            "androidMain",
-            "androidTest",
-            "iosMain",
-            "iosTest",
-            "jvmMain"
-        )
-        for (sourceSet in sourceSets) {
-            val sourceSetDir = File(moduleDir, "src/$sourceSet/kotlin/com/example/test/auth")
-            assertTrue("Source set $sourceSet should exist", sourceSetDir.exists())
+            val sourceSets = listOf(
+                "commonMain",
+                "commonTest",
+                "androidMain",
+                "nativeMain",
+                "jvmMain",
+                "wasmJsMain",
+            )
+            for (sourceSet in sourceSets) {
+                val sourceSetDir = File(moduleDir, "src/$sourceSet/kotlin/com/example/test/auth")
+                assertTrue(sourceSetDir.exists(), "Source set $sourceSet should exist")
+            }
+
+            val settingsContent = settingsFile.readText()
+            assertTrue(settingsContent.contains("include(\":auth\")"), "Settings should include module")
+
+            val buildContent = buildFile.readText()
+            assertTrue(buildContent.contains("androidNamespace = \"com.example.test.auth\""), "Build file should have androidNamespace")
+            assertTrue(buildContent.contains("iosFrameworkBaseName = \"Auth\""), "Build file should have iosFrameworkBaseName")
         }
 
-        val settingsContent = settingsFile.readText()
-        assertTrue("Settings should include module", settingsContent.contains("include(\":auth\")"))
+        @Test
+        fun `creates nested module with colon-separated name`() {
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withArguments("createKmpLibraryModule", "--name=:feature:auth")
+                .withPluginClasspath()
+                .build()
 
-        val buildContent = buildFile.readText()
-        assertTrue("Build file should have namespace", buildContent.contains("com.example.test.auth"))
-    }
+            assertEquals(TaskOutcome.SUCCESS, result.task(":createKmpLibraryModule")?.outcome)
 
-    @Test
-    fun `creates nested module with colon-separated name`() {
-        val result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments("createLibraryModule", "--name=:feature:auth")
-            .withPluginClasspath()
-            .build()
+            val moduleDir = File(testProjectDir, "feature/auth")
+            assertTrue(moduleDir.exists(), "Nested module directory should exist")
 
-        assertEquals(TaskOutcome.SUCCESS, result.task(":createLibraryModule")?.outcome)
+            val buildFile = File(moduleDir, "build.gradle.kts")
+            assertTrue(buildFile.exists(), "build.gradle.kts should exist in nested location")
 
-        val moduleDir = File(testProjectDir.root, "feature/auth")
-        assertTrue("Nested module directory should exist", moduleDir.exists())
+            val sourceSets = listOf(
+                "commonMain",
+                "commonTest",
+                "androidMain",
+                "nativeMain",
+                "jvmMain",
+                "wasmJsMain",
+            )
+            for (sourceSet in sourceSets) {
+                val sourceSetDir = File(moduleDir, "src/$sourceSet/kotlin/com/example/test/feature/auth")
+                assertTrue(sourceSetDir.exists(), "Source set $sourceSet should exist")
+            }
 
-        val buildFile = File(moduleDir, "build.gradle.kts")
-        assertTrue("build.gradle.kts should exist in nested location", buildFile.exists())
+            val settingsContent = settingsFile.readText()
+            assertTrue(settingsContent.contains("include(\":feature:auth\")"), "Settings should include nested module")
 
-        val sourceSets = listOf(
-            "commonMain",
-            "commonTest",
-            "androidMain",
-            "androidTest",
-            "iosMain",
-            "iosTest",
-            "jvmMain"
-        )
-        for (sourceSet in sourceSets) {
-            val sourceSetDir = File(moduleDir, "src/$sourceSet/kotlin/com/example/test/feature/auth")
-            assertTrue("Source set $sourceSet should exist", sourceSetDir.exists())
+            val buildContent = buildFile.readText()
+            assertTrue(buildContent.contains("androidNamespace = \"com.example.test.feature.auth\""), "Build file should have androidNamespace")
+            assertTrue(buildContent.contains("iosFrameworkBaseName = \"FeatureAuth\""), "Build file should have iosFrameworkBaseName")
         }
 
-        val settingsContent = settingsFile.readText()
-        assertTrue("Settings should include nested module", settingsContent.contains("include(\":feature:auth\")"))
-    }
+        @Test
+        fun `settings file entries are sorted alphabetically`() {
+            // Add in unsorted order
+            var settingsContent = settingsFile.readText()
+            settingsContent += "\ninclude(\":zeta\")\ninclude(\":beta\")"
+            settingsFile.writeText(settingsContent)
 
-    @Test
-    fun `settings file entries are sorted alphabetically`() {
-        // Add in unsorted order
-        var settingsContent = settingsFile.readText()
-        settingsContent += "\ninclude(\":zeta\")\ninclude(\":beta\")"
-        settingsFile.writeText(settingsContent)
+            File(testProjectDir, "zeta").mkdirs()
+            File(testProjectDir, "beta").mkdirs()
 
-        File(testProjectDir.root, "zeta").mkdirs()
-        File(testProjectDir.root, "beta").mkdirs()
+            val result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withArguments("createKmpLibraryModule", "--name=alpha")
+                .withPluginClasspath()
+                .build()
+            assertEquals(TaskOutcome.SUCCESS, result.task(":createKmpLibraryModule")?.outcome)
 
-        val result = GradleRunner.create()
-            .withProjectDir(testProjectDir.root)
-            .withArguments("createLibraryModule", "--name=alpha")
-            .withPluginClasspath()
-            .build()
-        assertEquals(TaskOutcome.SUCCESS, result.task(":createLibraryModule")?.outcome)
+            settingsContent = settingsFile.readText()
+            val includeStatements = settingsContent.lines()
+                .filter { it.contains("include(") }
+                .map { it.trim() }
+                .filter { it.isNotEmpty() }
 
-        settingsContent = settingsFile.readText()
-        val includeStatements = settingsContent.lines()
-            .filter { it.contains("include(") }
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-
-        assertEquals(listOf(
-            "include(\":alpha\")",
-            "include(\":beta\")",
-            "include(\":zeta\")"
-        ), includeStatements)
+            assertEquals(listOf(
+                "include(\":alpha\")",
+                "include(\":beta\")",
+                "include(\":zeta\")"
+            ), includeStatements)
+        }
     }
 }

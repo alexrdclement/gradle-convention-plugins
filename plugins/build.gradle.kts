@@ -34,7 +34,8 @@ dependencies {
     implementation(alexrdclementPluginLibs.shipkit.changelog.plugin)
     implementation(alexrdclementPluginLibs.maven.publish.plugin)
 
-    testImplementation(alexrdclementPluginLibs.junit)
+    testImplementation(alexrdclementPluginLibs.junit.jupiter)
+    testImplementation(alexrdclementPluginLibs.junit.platform.launcher)
     testImplementation(gradleTestKit())
 }
 
@@ -42,6 +43,10 @@ tasks {
     validatePlugins {
         enableStricterValidation = true
         failOnWarning = true
+    }
+
+    test {
+        useJUnitPlatform()
     }
 }
 
