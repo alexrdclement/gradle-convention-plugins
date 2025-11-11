@@ -27,6 +27,7 @@ dependencies {
     implementation(alexrdclementPluginLibs.compose.compiler.plugin)
     implementation(alexrdclementPluginLibs.kotlin.gradle.plugin)
     implementation(alexrdclementPluginLibs.kotlin.multiplatform.plugin)
+    implementation(alexrdclementPluginLibs.kotlin.serialization.plugin)
     implementation(alexrdclementPluginLibs.hilt.gradle.plugin)
     implementation(alexrdclementPluginLibs.ksp.gradle.plugin)
     implementation(alexrdclementPluginLibs.room.gradle.plugin)
@@ -107,6 +108,10 @@ gradlePlugin {
         register("kotlinMultiplatformLibrary") {
             id = "com.alexrdclement.gradle.plugin.kotlin.multiplatform.library"
             implementationClass = "KotlinMultiplatformLibraryConventionPlugin"
+        }
+        register("kotlinSerialization") {
+            id = "com.alexrdclement.gradle.plugin.kotlin.serialization"
+            implementationClass = "KotlinSerializationConventionPlugin"
         }
         register("mavenPublish") {
             id = "com.alexrdclement.gradle.plugin.maven.publish"
