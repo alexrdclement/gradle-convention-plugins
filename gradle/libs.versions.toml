@@ -1,6 +1,5 @@
 [versions]
 agp = "8.13.0"
-android-desugar-jdk-libs = "2.1.5"
 android-tools = "31.13.0"
 androidx-activity = "1.11.0"
 androidx-baselineprofile = "1.4.1"
@@ -40,7 +39,6 @@ shipkit-changelog-plugin = { group = "org.shipkit", name = "shipkit-changelog", 
 maven-publish-plugin = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "maven-publish" }
 
 # Applied via convention plugins
-android-desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-desugar-jdk-libs" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidx-core" }
 androidx-customview = { group = "androidx.customview", name = "customview-poolingcontainer", version.ref = "androidx-customview" }

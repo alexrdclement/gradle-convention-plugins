@@ -30,19 +30,12 @@ internal fun Project.configureKotlinAndroid(
         }
 
         compileOptions {
-            // Up to Java 11 APIs are available through desugaring
-            // https://developer.android.com/studio/write/java11-minimal-support-table
             sourceCompatibility = JavaVersion.VERSION_17
             targetCompatibility = JavaVersion.VERSION_17
-            isCoreLibraryDesugaringEnabled = true
         }
     }
 
     configureKotlin<KotlinAndroidProjectExtension>()
-
-    dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("android.desugar.jdk.libs").get())
-    }
 }
 
 internal fun Project.configureKotlinMultiplatformAndroidLibrary(
@@ -52,7 +45,6 @@ internal fun Project.configureKotlinMultiplatformAndroidLibrary(
     androidLibraryExtension.apply {
         compileSdk = AndroidCompileSdk
         minSdk = AndroidMinSdk
-        enableCoreLibraryDesugaring = true
 
         namespace = configuration.namespace
         configuration.hostTestConfiguration?.let(::withHostTest)
@@ -64,16 +56,10 @@ internal fun Project.configureKotlinMultiplatformAndroidLibrary(
             }
         }
     }
-
-    dependencies {
-        add("coreLibraryDesugaring", libs.findLibrary("android.desugar.jdk.libs").get())
-    }
 }
 
 internal fun Project.configureKotlinJvm() {
     extensions.configure<JavaPluginExtension> {
-        // Up to Java 11 APIs are available through desugaring
-        // https://developer.android.com/studio/write/java11-minimal-support-table
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
