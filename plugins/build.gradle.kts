@@ -4,6 +4,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     alias(alexrdclementPluginLibs.plugins.maven.publish)
+    id("generate-libs")
 }
 
 group = "com.alexrdclement.gradle.plugin"

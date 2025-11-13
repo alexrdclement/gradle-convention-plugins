@@ -1,8 +1,8 @@
 import com.alexrdclement.gradle.plugin.AndroidMinSdk
 import com.alexrdclement.gradle.plugin.AndroidTargetSdk
+import com.alexrdclement.gradle.plugin.Libs
 import com.alexrdclement.gradle.plugin.configureKotlinAndroid
 import com.alexrdclement.gradle.plugin.disableUnnecessaryAndroidTests
-import com.alexrdclement.gradle.plugin.libs
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Plugin
@@ -31,9 +31,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                 add("testImplementation", kotlin("test"))
 
                 add("androidTestImplementation", kotlin("test"))
-                add("androidTestImplementation", libs.findLibrary("androidx.test.core").get())
-                add("androidTestImplementation", libs.findLibrary("androidx.test.runner").get())
-                add("androidTestImplementation", libs.findLibrary("androidx.test.ext.junit").get())
+                add("androidTestImplementation", Libs.androidxTestCore)
+                add("androidTestImplementation", Libs.androidxTestRunner)
+                add("androidTestImplementation", Libs.androidxTestExtJunit)
             }
         }
     }

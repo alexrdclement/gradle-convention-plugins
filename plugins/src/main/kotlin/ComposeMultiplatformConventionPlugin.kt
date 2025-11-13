@@ -1,4 +1,4 @@
-import com.alexrdclement.gradle.plugin.libs
+import com.alexrdclement.gradle.plugin.Libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -39,9 +39,9 @@ fun Project.configureCompose() {
 
                     // TODO: revisit in later versions of Otter. See https://issuetracker.google.com/issues/422373442
                     implementation(compose.dependencies.uiTooling)
-                    implementation(libs.findLibrary("androidx.activity.compose").get())
-                    implementation(libs.findLibrary("androidx.customview").get())
-                    implementation(libs.findLibrary("androidx.emoji2").get())
+                    implementation(Libs.androidxActivityCompose)
+                    implementation(Libs.androidxCustomview)
+                    implementation(Libs.androidxEmoji2)
                 }
             }
 

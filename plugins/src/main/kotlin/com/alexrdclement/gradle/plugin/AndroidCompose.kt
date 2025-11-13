@@ -13,18 +13,16 @@ internal fun Project.configureAndroidCompose(
         }
 
         dependencies {
-            val bom = libs.findLibrary("compose-bom").get()
+            add("implementation", platform(Libs.composeBom))
+            add("implementation", Libs.composeFoundation)
+            add("implementation", Libs.composeRuntime)
+            add("implementation", Libs.composeUiToolingPreview)
 
-            add("implementation", platform(bom))
-            add("implementation", libs.findLibrary("compose.foundation").get())
-            add("implementation", libs.findLibrary("compose.runtime").get())
-            add("implementation", libs.findLibrary("compose.ui.tooling.preview").get())
+            add("androidTestImplementation", platform(Libs.composeBom))
+            add("androidTestImplementation", Libs.composeUiTestJunit4)
+            add("androidTestImplementation", Libs.androidxTestEspressoCore)
 
-            add("androidTestImplementation", platform(bom))
-            add("androidTestImplementation", libs.findLibrary("compose.ui.test.junit4").get())
-            add("androidTestImplementation", libs.findLibrary("androidx.test.espresso.core").get())
-
-            add("debugImplementation", libs.findLibrary("compose.ui.tooling").get())
+            add("debugImplementation", Libs.composeUiTooling)
         }
     }
 }

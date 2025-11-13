@@ -1,4 +1,4 @@
-import com.alexrdclement.gradle.plugin.libs
+import com.alexrdclement.gradle.plugin.Libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
@@ -12,8 +12,8 @@ class AndroidHiltConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                "implementation"(libs.findLibrary("hilt.android").get())
-                "ksp"(libs.findLibrary("hilt.compiler").get())
+                "implementation"(Libs.hiltAndroid)
+                "ksp"(Libs.hiltCompiler)
             }
         }
     }
