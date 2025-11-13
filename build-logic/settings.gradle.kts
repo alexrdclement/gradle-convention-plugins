@@ -6,7 +6,7 @@ dependencyResolutionManagement {
         gradlePluginPortal()
     }
     versionCatalogs {
-        create("libs") {
+        create("alexrdclementPluginLibs") {
             from(files("../gradle/libs.versions.toml"))
         }
     }

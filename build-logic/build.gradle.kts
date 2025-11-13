@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     implementation(gradleApi())
-    implementation(libs.kotlin.gradle.plugin)
+    implementation(alexrdclementPluginLibs.kotlin.gradle.plugin)
 }
 
 kotlin {
